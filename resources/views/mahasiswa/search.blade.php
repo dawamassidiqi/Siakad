@@ -7,22 +7,10 @@
             <h2>JURUSAN TEKNOLOGI INFORMASI-POLITEKNIK NEGERI MALANG</h2>
         </div>
         <div class="float-right my-2">
-            <form action="{{ url()->current() }}" method="get">
-                <div class="relative mx-auto">
-                    <input type="search" name="keyword" value="{{ request('keyword') }}" placeholder="Search ....." class="block w-full pl-4 pr-10 text-sm leading-5 transition rounded-full shadow-sm border-secondary-300 bg-secondary-50 focus:bg-white focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
-                    <button type="submit" class="absolute top-0 right-0 inline-flex items-center px-2 py-2 ml-1 mr-2 text-sm focus:outline-none">
-                        <svg class="w-5 h-5 text-gray-500 transition dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 disabled:opacity-25" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                </div>
-            </form>
             <a class="btn btn-success" href="{{ route('mahasiswa.create') }}"> Input Mahasiswa</a>
         </div>
     </div>
 </div>
-
-
 @if ($message = Session::get('success'))
 <div class="alert alert-success">
     <p>{{ $message }}</p>
@@ -34,6 +22,14 @@
 </div>
 @endif
 
+<form class="form" method="get" action="/search">
+    <div class="form-group w-100 mb-3">
+        <label for="search" class="d-block mr-2">Pencarian</label>
+        <input type="text" name="search" class="form-control w-75 d-inline" value="{{ old('search') }}" id="search" placeholder="Masukkan keyword">
+        <button type="submit" class="btn btn-primary mb-1">Cari</button>
+    </div>
+</form>
+
 <table class="table table-bordered">
     <tr>
         <th>Nim</th>
@@ -42,16 +38,15 @@
         <th>Jurusan</th>
         <th width="280px">Action</th>
     </tr>
-    @foreach ($mahasiswa as $mhs)
+    @if(!empty($paginate) && $paginate->count())
+    @foreach($paginate as $mhs)
     <tr>
-
-        <td>{{ $mhs ->nim }}</td>
-        <td>{{ $mhs ->nama }}</td>
-        <td>{{ $mhs ->kelas->nama_kelas }}</td>
-        <td>{{ $mhs ->jurusan }}</td>
+        <td>{{ $mhs->nim }}</td>
+        <td>{{ $mhs->nama }}</td>
+        <td>{{ $mhs->kelas->nama_kelas }}</td>
+        <td>{{ $mhs->jurusan }}</td>
         <td>
             <form action="{{ route('mahasiswa.destroy',['mahasiswa'=>$mhs->nim]) }}" method="POST">
-
                 <a class="btn btn-info" href="{{ route('mahasiswa.show',$mhs->nim) }}">Show</a>
                 <a class="btn btn-primary" href="{{ route('mahasiswa.edit',$mhs->nim) }}">Edit</a>
                 @csrf
@@ -61,6 +56,13 @@
         </td>
     </tr>
     @endforeach
+    @else
+    <tr>
+        <td colspan="10">There are no data.</td>
+    </tr>
+    @endif
 </table>
-{{ $mahasiswa->links() }}
+
+{!! $paginate->links() !!}
+
 @endsection
