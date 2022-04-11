@@ -12,21 +12,26 @@ use App\Models\Mahasiswa;
 class Mahasiswa extends Model //Definisi Model
 {
     protected $table = 'mahasiswa'; // Eloquent akan membuat model mahasiswa menyimpan record di tabel mahasiswa 
-    protected $primaryKey = 'nim'; // Memanggil isi DB Dengan primarykey
+    protected $primaryKey = 'id_mahasiswa'; // Memanggil isi DB Dengan primarykey
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'nim',
-        'nama',
-        'kelas_id',
-        'jurusan'
+        'Nim',
+        'Nama',
+        'Kelas',
+        'Jurusan'
     ];
 
     public function kelas()
     {
         return $this->belongsTo(Kelas::class);
+    }
+
+    public function mahasiswa_matakuliah()
+    {
+        return $this->belongsToMany(Mahasiswa_MataKuliah::class);
     }
 };
